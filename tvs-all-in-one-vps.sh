@@ -102,7 +102,7 @@ function readPassword(){
 	if ((ifCopyPassword)); then
 		case ${1:-} in
 			ssr )
-				trojanPassword=${!refPasswordName}
+				ssrPassword=${!refPasswordName}
 				;;
 		esac
 	else
