@@ -496,7 +496,7 @@ function menu(){
 	display="${display}${COLORS_END}"
 	echo -e $display
 	read -p "请输入操作的步骤代号：" string
-	action "$string"
+#	action "$string"
 }
 
 menu
