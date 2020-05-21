@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 trap 'echo "“Chinese Engineer 中国工程师”祝愿“科技让您的生活更美好”，再见！"' EXIT
-set -euo pipefail
+set -euxo pipefail
 
 # Colors
 RED='\033[0;31m'
