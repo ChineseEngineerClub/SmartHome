@@ -108,7 +108,7 @@ function readPassword(){
 	else
 		while [ -z "${!passwordName}" ]; do
 			read -p "配置$name密码（输入时不显示）：" -s $passwordName
-			echo -e "\n"
+			echo
 		done
 		local input=${!passwordName}
 		if [[ "${input,,}" = "u" ]]; then
