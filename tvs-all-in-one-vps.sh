@@ -176,9 +176,8 @@ function install_bbr(){
 
 function install_needful_softs(){
 	if [[ "${1:-}" = "auto" ]]; then
-		apt-get install expect
 		/usr/bin/expect << _EOF_
-		    set timeout 20
+		    set timeout -1
 			spawn apt-get install nano curl wget apt-transport-https
 			expect "continue" { send "Y\r" }
 _EOF_
@@ -191,7 +190,7 @@ function apply_certs(){
 	apt-get install certbot
 	if [[ "${1:-}" = "auto" ]]; then
 		/usr/bin/expect << _EOF_
-			set timeout 20
+			set timeout -1
 			spawn certbot certonly --standalone -d $domain -m $email
 			expect "continue" { send "Y\r" }
 			expect "(A)gree/(C)ancel:" { send "A\r" }
@@ -291,7 +290,7 @@ _EOF_
 function install_shadowsocks-libev(){
 	if [[ "${1:-}" = "auto" ]]; then
 		/usr/bin/expect << _EOF_
-			set timeout 20
+			set timeout -1
 			spawn apt-get install shadowsocks-libev
 			expect "continue" { send "Y\r" }
 			expect "overwrite" { send "y\r" }
@@ -441,6 +440,22 @@ function action(){
 			;;
 		99)
 			displayContents "99. 安装全部（Ctrl+C退出）"
+			local display
+			display="${GREEN}\n"
+			display="${display}  ==========================================================================================\n"
+			display="${display}  安装依赖\n"
+			display="${display}  ==========================================================================================\n"
+			display="${display}${COLORS_END}"
+			echo -e $display
+			sleep 1
+			apt-get install expect
+			display="${GREEN}\n"
+			display="${display}  ==========================================================================================\n"
+			display="${display}  输入个性化内容：\n"
+			display="${display}  ==========================================================================================\n"
+			display="${display}${COLORS_END}"
+			echo -e $display
+			sleep 1
 			readPrompt "请确认80端口已经开放，并且未被占用（确认后回车以继续）！"
 			local readRefs
 			readRefs[0]="readDomain \"请输入一个已经解析到本主机的有效域名：\""
