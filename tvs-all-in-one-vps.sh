@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 trap 'echo "“Chinese Engineer 中国工程师”祝愿“科技让您的生活更美好”，再见！"' EXIT
-set -euo pipefail
+set -eo pipefail
 
 # Colors
 RED='\033[0;31m'
@@ -374,58 +374,28 @@ function yes_or_no(){
 	esac
 }
 
-function menu(){
-	clear
-	local display
-	display="${GREEN}\n"
-	display="${display}  ==========================================================================================\n"
-	display="${display}  介绍：Nginx Trojan+V2ray+Shadowsocks-libev（TVS） ALL-IN-ONE VPS\n"
-	display="${display}  参考主机: Amazon Lightsail\n"
-	display="${display}  参考系统：Debian 9.5\n"
-	display="${display}  作者：Chinese Engineer 中国工程师\n"
-	display="${display}  youtube频道：https://www.youtube.com/channel/UCsnE5O7jJzOO_JtFQFASNxw\n"
-	display="${display}  网站（中国工程师俱乐部）：ChineseEngineer.CLUB\n"
-	display="${display}  图文教程：http://chineseengineer.club/smart-home/nginx-trojan-v2ray-ssr-all-in-one-vps-443/\n"
-	display="${display}  ==========================================================================================\n"
-	display="${display}${COLORS_END}"
-	display="${display}${THINGREEN}\n"
-	display="${display}  1. 更新软件源\n"
-	display="${display}  2. 开启BBR加速\n"
-	display="${display}  3. 安装必要软件\n"
-	display="${display}  4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）\n"
-	display="${display}  5. 部署Nginx\n"
-	display="${display}  6. 部署Trojan\n"
-	display="${display}  7. 部署V2ray\n"
-	display="${display}  8. 部署Shadowsocks-libev\n"
-	display="${display}  ------------------------------\n"
-	display="${display}  99. 安装全部（不建议）\n"
-	display="${display}  ------------------------------\n"
-	display="${display}  0. 退出\n"
-	display="${display}${COLORS_END}"
-	echo -e $display
-	read -p "请输入操作的步骤代号：" str
-
-	case "$str" in
+function action(){
+	case ${1:-} in
 		1) 
 			displayContents "1. 更新软件源"
 			set -x
 		    apt-get update
 			set +x
-			yes_or_no "是否继续下一步：2. 开启BBR加速" "action $((str + 1))" "exit 1"
+			yes_or_no "是否继续下一步：2. 开启BBR加速" "menu $(($1 + 1))" "exit 1"
 			;;
 		2)
 			displayContents "2. 开启BBR加速"
 			set -x
 			install_bbr
 			set +x
-			yes_or_no "是否继续下一步：3. 安装必要软件" "action $((str + 1))" "exit 1"
+			yes_or_no "是否继续下一步：3. 安装必要软件" "menu $(($1 + 1))" "exit 1"
 			;;
 		3)
 			displayContents "3. 安装必要软件"
 			set -x
 			install_needful_softs
 			set +x
-			yes_or_no "是否继续下一步：4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）" "action $((str + 1))" "exit 1"
+			yes_or_no "是否继续下一步：4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）" "menu $(($1 + 1))" "exit 1"
 			;;
 		4)
 			displayContents "4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）"
@@ -434,14 +404,14 @@ function menu(){
 			set -x
 			apply_certs
 			set +x
-			yes_or_no "是否继续下一步：5. 部署Nginx" "action $((str + 1))" "exit 1"
+			yes_or_no "是否继续下一步：5. 部署Nginx" "menu $(($1 + 1))" "exit 1"
 			;;
 		5)
 			displayContents "5. 部署Nginx"
 			set -x
 			install_nginx
 			set +x
-			if_do_next $((str + 1))
+			if_do_next $(($1 + 1))
 			;;
 		6)
 			displayContents "6. 部署Trojan"
@@ -451,7 +421,7 @@ function menu(){
 			install_trojan
 			set +x
 			displayConfigs trojan
-			yes_or_no "是否继续下一步：7. 部署V2ray" "action $((str + 1))" "exit 1"
+			yes_or_no "是否继续下一步：7. 部署V2ray" "menu $(($1 + 1))" "exit 1"
 			;;
 		7)
 			displayContents "7. 部署V2ray"
@@ -459,7 +429,7 @@ function menu(){
 			install_v2ray
 			set +x
 			displayConfigs v2ray
-			yes_or_no "是否继续下一步：8. 部署Shadowsocks-libev" "action $((str + 1))" "exit 1"
+			yes_or_no "是否继续下一步：8. 部署Shadowsocks-libev" "menu $(($1 + 1))" "exit 1"
 			;;
 		8)
 			displayContents "8. 部署Shadowsocks-libev"
@@ -494,6 +464,45 @@ function menu(){
 			menu
 			;;
 	esac
+}
+
+function menu(){
+	clear
+	local display
+	display="${GREEN}\n"
+	display="${display}  ==========================================================================================\n"
+	display="${display}  介绍：Nginx Trojan+V2ray+Shadowsocks-libev（TVS） ALL-IN-ONE VPS\n"
+	display="${display}  参考主机: Amazon Lightsail\n"
+	display="${display}  参考系统：Debian 9.5\n"
+	display="${display}  作者：Chinese Engineer 中国工程师\n"
+	display="${display}  youtube频道：https://www.youtube.com/channel/UCsnE5O7jJzOO_JtFQFASNxw\n"
+	display="${display}  网站（中国工程师俱乐部）：ChineseEngineer.CLUB\n"
+	display="${display}  图文教程：http://chineseengineer.club/smart-home/nginx-trojan-v2ray-ssr-all-in-one-vps-443/\n"
+	display="${display}  ==========================================================================================\n"
+	display="${display}${COLORS_END}"
+	display="${display}${THINGREEN}\n"
+	display="${display}  1. 更新软件源\n"
+	display="${display}  2. 开启BBR加速\n"
+	display="${display}  3. 安装必要软件\n"
+	display="${display}  4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）\n"
+	display="${display}  5. 部署Nginx\n"
+	display="${display}  6. 部署Trojan\n"
+	display="${display}  7. 部署V2ray\n"
+	display="${display}  8. 部署Shadowsocks-libev\n"
+	display="${display}  ------------------------------\n"
+	display="${display}  99. 安装全部（不建议）\n"
+	display="${display}  ------------------------------\n"
+	display="${display}  0. 退出\n"
+	display="${display}${COLORS_END}"
+	echo -e $display
+	local str
+	if [[ -n ${1:-""} ]]; then
+		str=$1
+		action $str
+	else
+		read -p "请输入操作的步骤代号：" str
+		action $str
+	fi
 }
 
 menu
