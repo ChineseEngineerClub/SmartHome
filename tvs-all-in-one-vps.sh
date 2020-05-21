@@ -403,9 +403,9 @@ function menu(){
 	display="${display}  0. 退出\n"
 	display="${display}${COLORS_END}"
 	echo -e $display
-	read -p "请输入操作的步骤代号：" string
+	read -p "请输入操作的步骤代号：" str
 	
-	case "$string" in
+	case "$str" in
 		1) 
 			displayContents "1. 更新软件源"
 			set -x
@@ -486,6 +486,7 @@ function menu(){
 			displayConfigs ssr
 			;;
 		0)
+			echo hehe
 			exit 1
 			;;
 		*)
