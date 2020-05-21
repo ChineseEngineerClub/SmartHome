@@ -374,8 +374,38 @@ function yes_or_no(){
 	esac
 }
 
-function action(){
-	case "$1" in
+function menu(){
+	clear
+	local display
+	display="${GREEN}\n"
+	display="${display}  ==========================================================================================\n"
+	display="${display}  介绍：Nginx Trojan+V2ray+Shadowsocks-libev（TVS） ALL-IN-ONE VPS\n"
+	display="${display}  参考主机: Amazon Lightsail\n"
+	display="${display}  参考系统：Debian 9.5\n"
+	display="${display}  作者：Chinese Engineer 中国工程师\n"
+	display="${display}  youtube频道：https://www.youtube.com/channel/UCsnE5O7jJzOO_JtFQFASNxw\n"
+	display="${display}  网站（中国工程师俱乐部）：ChineseEngineer.CLUB\n"
+	display="${display}  图文教程：http://chineseengineer.club/smart-home/nginx-trojan-v2ray-ssr-all-in-one-vps-443/\n"
+	display="${display}  ==========================================================================================\n"
+	display="${display}${COLORS_END}"
+	display="${display}${THINGREEN}\n"
+	display="${display}  1. 更新软件源\n"
+	display="${display}  2. 开启BBR加速\n"
+	display="${display}  3. 安装必要软件\n"
+	display="${display}  4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）\n"
+	display="${display}  5. 部署Nginx\n"
+	display="${display}  6. 部署Trojan\n"
+	display="${display}  7. 部署V2ray\n"
+	display="${display}  8. 部署Shadowsocks-libev\n"
+	display="${display}  ------------------------------\n"
+	display="${display}  99. 安装全部（不建议）\n"
+	display="${display}  ------------------------------\n"
+	display="${display}  0. 退出\n"
+	display="${display}${COLORS_END}"
+	echo -e $display
+	read -p "请输入操作的步骤代号：" string
+	
+	case "$string" in
 		1) 
 			displayContents "1. 更新软件源"
 			set -x
@@ -464,39 +494,6 @@ function action(){
 			menu
 			;;
 	esac
-}
-
-function menu(){
-	clear
-	local display
-	display="${GREEN}\n"
-	display="${display}  ==========================================================================================\n"
-	display="${display}  介绍：Nginx Trojan+V2ray+Shadowsocks-libev（TVS） ALL-IN-ONE VPS\n"
-	display="${display}  参考主机: Amazon Lightsail\n"
-	display="${display}  参考系统：Debian 9.5\n"
-	display="${display}  作者：Chinese Engineer 中国工程师\n"
-	display="${display}  youtube频道：https://www.youtube.com/channel/UCsnE5O7jJzOO_JtFQFASNxw\n"
-	display="${display}  网站（中国工程师俱乐部）：ChineseEngineer.CLUB\n"
-	display="${display}  图文教程：http://chineseengineer.club/smart-home/nginx-trojan-v2ray-ssr-all-in-one-vps-443/\n"
-	display="${display}  ==========================================================================================\n"
-	display="${display}${COLORS_END}"
-	display="${display}${THINGREEN}\n"
-	display="${display}  1. 更新软件源\n"
-	display="${display}  2. 开启BBR加速\n"
-	display="${display}  3. 安装必要软件\n"
-	display="${display}  4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）\n"
-	display="${display}  5. 部署Nginx\n"
-	display="${display}  6. 部署Trojan\n"
-	display="${display}  7. 部署V2ray\n"
-	display="${display}  8. 部署Shadowsocks-libev\n"
-	display="${display}  ------------------------------\n"
-	display="${display}  99. 安装全部（不建议）\n"
-	display="${display}  ------------------------------\n"
-	display="${display}  0. 退出\n"
-	display="${display}${COLORS_END}"
-	echo -e $display
-#	read -p "请输入操作的步骤代号：" string
-#	action "$string"
 }
 
 menu
