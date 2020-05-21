@@ -179,7 +179,6 @@ function install_needful_softs(){
 		/usr/bin/expect << _EOF_
 			spawn apt-get install nano curl wget apt-transport-https
 			expect "continue" { send "Y\r" }
-			expect eof
 _EOF_
 	else
 		apt-get install nano curl wget apt-transport-https
@@ -194,7 +193,6 @@ function apply_certs(){
 			expect "continue" { send "Y\r" }
 			expect "(A)gree/(C)ancel:" { send "A\r" }
 			expect "(Y)es/(N)o" { send "N\r" }
-			expect eof
 _EOF_
 	else
 		ertbot certonly --standalone -d $domain -m $email
@@ -293,7 +291,6 @@ function install_shadowsocks-libev(){
 			spawn apt-get install shadowsocks-libev
 			expect "continue" { send "Y\r" }
 			expect "overwrite" { send "y\r" }
-			expect eof
 _EOF_
 	else
 		apt-get install shadowsocks-libev
@@ -330,7 +327,7 @@ function install_all(){
 	install_nginx
 	install_trojan
 	install_v2ray
-	install_shadowsocks-libev
+	install_shadowsocks-libev auto
 }
 
 function yes_or_no(){
