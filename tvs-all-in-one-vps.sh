@@ -108,7 +108,7 @@ function readPassword(){
 	else
 		while [ -z "${!passwordName}" ]; do
 			read -p "配置$name密码（输入时不显示）：" -s $passwordName
-			echo
+			echo -e "\n"
 		done
 		local input=${!passwordName}
 		if [[ "${input,,}" = "u" ]]; then
@@ -404,28 +404,28 @@ function menu(){
 	display="${display}${COLORS_END}"
 	echo -e $display
 	read -p "请输入操作的步骤代号：" str
-	
+
 	case "$str" in
 		1) 
 			displayContents "1. 更新软件源"
 			set -x
 		    apt-get update
 			set +x
-			yes_or_no "是否继续下一步：2. 开启BBR加速" "action $(($1 + 1))" "exit 1"
+			yes_or_no "是否继续下一步：2. 开启BBR加速" "action $((str + 1))" "exit 1"
 			;;
 		2)
 			displayContents "2. 开启BBR加速"
 			set -x
 			install_bbr
 			set +x
-			yes_or_no "是否继续下一步：3. 安装必要软件" "action $(($1 + 1))" "exit 1"
+			yes_or_no "是否继续下一步：3. 安装必要软件" "action $((str + 1))" "exit 1"
 			;;
 		3)
 			displayContents "3. 安装必要软件"
 			set -x
 			install_needful_softs
 			set +x
-			yes_or_no "是否继续下一步：4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）" "action $(($1 + 1))" "exit 1"
+			yes_or_no "是否继续下一步：4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）" "action $((str + 1))" "exit 1"
 			;;
 		4)
 			displayContents "4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）"
@@ -434,14 +434,14 @@ function menu(){
 			set -x
 			apply_certs
 			set +x
-			yes_or_no "是否继续下一步：5. 部署Nginx" "action $(($1 + 1))" "exit 1"
+			yes_or_no "是否继续下一步：5. 部署Nginx" "action $((str + 1))" "exit 1"
 			;;
 		5)
 			displayContents "5. 部署Nginx"
 			set -x
 			install_nginx
 			set +x
-			if_do_next $(($1 + 1))
+			if_do_next $((str + 1))
 			;;
 		6)
 			displayContents "6. 部署Trojan"
@@ -451,7 +451,7 @@ function menu(){
 			install_trojan
 			set +x
 			displayConfigs trojan
-			yes_or_no "是否继续下一步：7. 部署V2ray" "action $(($1 + 1))" "exit 1"
+			yes_or_no "是否继续下一步：7. 部署V2ray" "action $((str + 1))" "exit 1"
 			;;
 		7)
 			displayContents "7. 部署V2ray"
@@ -459,7 +459,7 @@ function menu(){
 			install_v2ray
 			set +x
 			displayConfigs v2ray
-			yes_or_no "是否继续下一步：8. 部署Shadowsocks-libev" "action $(($1 + 1))" "exit 1"
+			yes_or_no "是否继续下一步：8. 部署Shadowsocks-libev" "action $((str + 1))" "exit 1"
 			;;
 		8)
 			displayContents "8. 部署Shadowsocks-libev"
@@ -486,7 +486,6 @@ function menu(){
 			displayConfigs ssr
 			;;
 		0)
-			echo hehe
 			exit 1
 			;;
 		*)
