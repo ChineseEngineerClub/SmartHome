@@ -34,73 +34,73 @@ function displayContents(){
 
 function displayInstallItems(){
 	local display
-	display="${THINGREEN}\n"
-	display="${display}  ==========================================================================================\n"
+	display="${THINGREEN}"
+	display="${display}\n  =========================================================================================="
 	case "${1:-}" in
 		update )
-			display="${display}  1. 更新软件源"
-			display="${display}  apt-get update"
+			display="${display}\n  1. 更新软件源"
+			display="${display}\n  apt-get update"
 			;;
 		bbr )
-			display="${display}  2. 开启BBR加速"
-			display="${display}  echo \"net.core.default_qdisc=fq\" >> /etc/sysctl.conf"
-			display="${display}  echo \"net.ipv4.tcp_congestion_control=bbr\" >> /etc/sysctl.conf"
-			display="${display}  sysctl -p"
-			display="${display}  -------------------------"
+			display="${display}\n  2. 开启BBR加速"
+			display="${display}\n  echo \"net.core.default_qdisc=fq\" >> /etc/sysctl.conf"
+			display="${display}\n  echo \"net.ipv4.tcp_congestion_control=bbr\" >> /etc/sysctl.conf"
+			display="${display}\n  sysctl -p"
+			display="${display}\n  -------------------------"
 			display="${display}  检查运行状态"
-			display="${display}  -------------------------\n"
-			display="${display}  lsmod | grep bbr"
 			display="${display}  -------------------------"
+			display="${display}\n  lsmod | grep bbr"
+			display="${display}\n  -------------------------"
 			display="${display}  BBR一键安装代码（备用）"
-			display="${display}  -------------------------\n"
-			display="${display}  wget -N --no-check-certificate \"https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh && chmod +x tcp.sh && ./tcp.sh\""
+			display="${display}  -------------------------"
+			display="${display}\n  wget -N --no-check-certificate \"https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh && chmod +x tcp.sh && ./tcp.sh\""
 			;;
 		needfulSofts )
-			display="${display}  3. 安装必要软件"
-			display="${display}  apt-get install nano curl wget apt-transport-https"
+			display="${display}\n  3. 安装必要软件"
+			display="${display}\n  apt-get install nano curl wget apt-transport-https"
 			;;
 		certs )
-			display="${display}  4. 申请Letsencrypt证书"
-			display="${display}  apt-get install certbot"
-			display="${display}  certbot certonly --standalone -d 已经解析到本主机的域名"
+			display="${display}\n  4. 申请Letsencrypt证书"
+			display="${display}\n  apt-get install certbot"
+			display="${display}\n  certbot certonly --standalone -d 已经解析到本主机的域名"
 			;;
 		nginx )
-			display="${display}  5. 部署Nginx"
-			display="${display}  -------------------------"
+			display="${display}\n  5. 部署Nginx"
+			display="${display}\n  -------------------------"
 			display="${display}  配置官方仓库"
 			display="${display}  -------------------------\n"
-			display="${display}  wget https://nginx.org/keys/nginx_signing.key"
-			display="${display}  apt-key add nginx_signing.key"
-			display="${display}  -------------------------"
+			display="${display}\n  wget https://nginx.org/keys/nginx_signing.key"
+			display="${display}\n  apt-key add nginx_signing.key"
+			display="${display}\n  -------------------------"
 			display="${display}  安装"
 			display="${display}  -------------------------\n"
-			display="${display}  apt-get install nginx"
+			display="${display}\n  apt-get install nginx"
 			;;
 		trojan )
-			display="${display}  6. 部署Trojan"
-			display="${display}  bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)\""
+			display="${display}\n  6. 部署Trojan"
+			display="${display}\n  bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)\""
 			;;
 		v2ray )
-			display="${display}  7. 部署V2ray"
-			display="${display}  bash <(curl -L -s https://install.direct/go.sh)"
+			display="${display}\n  7. 部署V2ray"
+			display="${display}\n  bash <(curl -L -s https://install.direct/go.sh)"
 			;;
 		ssr )
-			display="${display}  8. 部署Shadowsocks-libev"
-			display="${display}  apt-get install shadowsocks-libev"
-			display="${display}  apt-get install libsodium-dev"
-			display="${display}  -------------------------"
+			display="${display}\n  8. 部署Shadowsocks-libev"
+			display="${display}\n  apt-get install shadowsocks-libev"
+			display="${display}\n  apt-get install libsodium-dev"
+			display="${display}\n  -------------------------"
 			display="${display}  安装v2ray-plugin"
 			display="${display}  -------------------------\n"
-			display="${display}  wget https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.0/v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
-			display="${display}  tar -xzvf v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
-			display="${display}  mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin"
+			display="${display}\n  wget https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.0/v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
+			display="${display}\n  tar -xzvf v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
+			display="${display}\n  mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin"
 			;;
 		* )
 			exit 1
 			;;
 	esac
-	display="${display}  ==========================================================================================\n"
-	display="${display}${COLORS_END}"
+	display="${display}\n  =========================================================================================="
+	display="${display}\n${COLORS_END}"
 	echo -e $display
 	sleep 1
 }
