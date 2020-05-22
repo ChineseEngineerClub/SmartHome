@@ -32,6 +32,79 @@ function displayContents(){
 	sleep 1
 }
 
+function displayInstallItems(){
+	local display
+	display="${THINGREEN}\n"
+	display="${display}  ==========================================================================================\n"
+	case "${1:-}" in
+		update )
+			display="${display}  1. 更新软件源"
+			display="${display}  apt-get update"
+			;;
+		bbr )
+			display="${display}  2. 开启BBR加速"
+			display="${display}  echo \"net.core.default_qdisc=fq\" >> /etc/sysctl.conf"
+			display="${display}  echo \"net.ipv4.tcp_congestion_control=bbr\" >> /etc/sysctl.conf"
+			display="${display}  sysctl -p"
+			display="${display}  -------------------------"
+			display="${display}  检查运行状态"
+			display="${display}  -------------------------\n"
+			display="${display}  lsmod | grep bbr"
+			display="${display}  -------------------------"
+			display="${display}  BBR一键安装代码（备用）"
+			display="${display}  -------------------------\n"
+			display="${display}  wget -N --no-check-certificate \"https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh && chmod +x tcp.sh && ./tcp.sh\""
+			;;
+		needfulSofts )
+			display="${display}  3. 安装必要软件"
+			display="${display}  apt-get install nano curl wget apt-transport-https"
+			;;
+		certs )
+			display="${display}  4. 申请Letsencrypt证书"
+			display="${display}  apt-get install certbot"
+			display="${display}  certbot certonly --standalone -d 已经解析到本主机的域名"
+			;;
+		nginx )
+			display="${display}  5. 部署Nginx"
+			display="${display}  -------------------------"
+			display="${display}  配置官方仓库"
+			display="${display}  -------------------------\n"
+			display="${display}  wget https://nginx.org/keys/nginx_signing.key"
+			display="${display}  apt-key add nginx_signing.key"
+			display="${display}  -------------------------"
+			display="${display}  安装"
+			display="${display}  -------------------------\n"
+			display="${display}  apt-get install nginx"
+			;;
+		trojan )
+			display="${display}  6. 部署Trojan"
+			display="${display}  bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)\""
+			;;
+		v2ray )
+			display="${display}  7. 部署V2ray"
+			display="${display}  bash <(curl -L -s https://install.direct/go.sh)"
+			;;
+		ssr )
+			display="${display}  8. 部署Shadowsocks-libev"
+			display="${display}  apt-get install shadowsocks-libev"
+			display="${display}  apt-get install libsodium-dev"
+			display="${display}  -------------------------"
+			display="${display}  安装v2ray-plugin"
+			display="${display}  -------------------------\n"
+			display="${display}  wget https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.0/v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
+			display="${display}  tar -xzvf v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
+			display="${display}  mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin"
+			;;
+		* )
+			exit 1
+			;;
+	esac
+	display="${display}  ==========================================================================================\n"
+	display="${display}${COLORS_END}"
+	echo -e $display
+	sleep 1
+}
+
 function displayContentsWithTitle(){
 	local display
 	display="${THINGREEN}\n"
@@ -202,7 +275,7 @@ _EOF_
 _EOF_
 	else
 		apt-get install certbot
-		ertbot certonly --standalone -d $domain -m $email
+		certbot certonly --standalone -d $domain
 	fi
 }
 
@@ -327,13 +400,37 @@ _EOF_
 }
 
 function install_all(){
+	set +x
+	displayInstallItems update
+	set -x
 	apt-get update
+	set +x
+	displayInstallItems bbr
+	set -x
 	install_bbr
+	set +x
+	displayInstallItems needfulSofts
+	set -x
 	install_needful_softs auto
+	set +x
+	displayInstallItems certs
+	set -x
 	apply_certs auto
+	set +x
+	displayInstallItems nginx
+	set -x
 	install_nginx
+	set +x
+	displayInstallItems trojan
+	set -x
 	install_trojan
+	set +x
+	displayInstallItems v2ray
+	set -x
 	install_v2ray
+	set +x
+	displayInstallItems ssr
+	set -x
 	install_shadowsocks-libev auto
 }
 
@@ -380,28 +477,28 @@ function yes_or_no(){
 function action(){
 	case ${1:-} in
 		1) 
-			displayContents "1. 更新软件源"
+			displayInstallItems update
 			set -x
 		    apt-get update
 			set +x
 			yes_or_no "是否继续下一步：2. 开启BBR加速" "menu $(($1 + 1))" "exit 1"
 			;;
 		2)
-			displayContents "2. 开启BBR加速"
+			displayInstallItems bbr
 			set -x
 			install_bbr
 			set +x
 			yes_or_no "是否继续下一步：3. 安装必要软件" "menu $(($1 + 1))" "exit 1"
 			;;
 		3)
-			displayContents "3. 安装必要软件"
+			displayInstallItems needfulSofts
 			set -x
 			install_needful_softs
 			set +x
 			yes_or_no "是否继续下一步：4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）" "menu $(($1 + 1))" "exit 1"
 			;;
 		4)
-			displayContents "4. 申请Letsencrypt证书（需要确保80端口已开放并且不被占用）"
+			displayInstallItems certs
 			readPrompt "请确认80端口已经开放，并且未被占用（确认后回车以继续）！"
 			readDomain "请输入一个已经解析到本主机的有效域名："
 			set -x
@@ -410,16 +507,18 @@ function action(){
 			yes_or_no "是否继续下一步：5. 部署Nginx" "menu $(($1 + 1))" "exit 1"
 			;;
 		5)
-			displayContents "5. 部署Nginx"
+			displayInstallItems nginx
 			set -x
 			install_nginx
 			set +x
-			if_do_next $(($1 + 1))
+			yes_or_no "是否继续下一步：6. 部署Trojan" "menu $(($1 + 1))" "exit 1"
 			;;
 		6)
-			displayContents "6. 部署Trojan"
-			readDomain "请输入申请证书时所用的域名："
-			readPassword trojan
+			displayInstallItems trojan
+			local readRefs
+			readRefs[0]="readDomain \"请输入申请证书时所用的域名：\""
+			readRefs[1]="readPassword trojan"
+			readWithUndo "${readRefs[0]}" "${readRefs[1]}"
 			set -x
 			install_trojan
 			set +x
@@ -427,7 +526,7 @@ function action(){
 			yes_or_no "是否继续下一步：7. 部署V2ray" "menu $(($1 + 1))" "exit 1"
 			;;
 		7)
-			displayContents "7. 部署V2ray"
+			displayInstallItems v2ray
 			set -x
 			install_v2ray
 			set +x
@@ -435,7 +534,7 @@ function action(){
 			yes_or_no "是否继续下一步：8. 部署Shadowsocks-libev" "menu $(($1 + 1))" "exit 1"
 			;;
 		8)
-			displayContents "8. 部署Shadowsocks-libev"
+			displayInstallItems ssr
 			readPassword ssr trojan
 			set -x
 			install_shadowsocks-libev
@@ -444,22 +543,9 @@ function action(){
 			;;
 		99)
 			displayContents "99. 安装全部（Ctrl+C退出）"
-			local display
-			display="${GREEN}\n"
-			display="${display}  ==========================================================================================\n"
-			display="${display}  安装依赖\n"
-			display="${display}  ==========================================================================================\n"
-			display="${display}${COLORS_END}"
-			echo -e $display
-			sleep 1
+			displayContents "安装依赖"
 			apt-get install expect
-			display="${GREEN}\n"
-			display="${display}  ==========================================================================================\n"
-			display="${display}  输入个性化内容：\n"
-			display="${display}  ==========================================================================================\n"
-			display="${display}${COLORS_END}"
-			echo -e $display
-			sleep 1
+			displayContents "输入个性化内容："
 			readPrompt "请确认80端口已经开放，并且未被占用（确认后回车以继续）！"
 			local readRefs
 			readRefs[0]="readDomain \"请输入一个已经解析到本主机的有效域名：\""
