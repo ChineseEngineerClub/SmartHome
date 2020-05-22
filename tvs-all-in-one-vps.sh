@@ -46,11 +46,11 @@ function displayInstallItems(){
 			display="${display}\n  echo \"net.core.default_qdisc=fq\" >> /etc/sysctl.conf"
 			display="${display}\n  echo \"net.ipv4.tcp_congestion_control=bbr\" >> /etc/sysctl.conf"
 			display="${display}\n  sysctl -p"
-			display="${display}\n  -------------------------"
+			display="${display}\n\n  -------------------------"
 			display="${display}  检查运行状态"
 			display="${display}  -------------------------"
 			display="${display}\n  lsmod | grep bbr"
-			display="${display}\n  -------------------------"
+			display="${display}\n\n  -------------------------"
 			display="${display}  BBR一键安装代码（备用）"
 			display="${display}  -------------------------"
 			display="${display}\n  wget -N --no-check-certificate \"https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh && chmod +x tcp.sh && ./tcp.sh\""
@@ -66,14 +66,14 @@ function displayInstallItems(){
 			;;
 		nginx )
 			display="${display}\n  5. 部署Nginx"
-			display="${display}\n  -------------------------"
+			display="${display}\n\n  -------------------------"
 			display="${display}  配置官方仓库"
-			display="${display}  -------------------------\n"
+			display="${display}  -------------------------"
 			display="${display}\n  wget https://nginx.org/keys/nginx_signing.key"
 			display="${display}\n  apt-key add nginx_signing.key"
-			display="${display}\n  -------------------------"
+			display="${display}\n\n  -------------------------"
 			display="${display}  安装"
-			display="${display}  -------------------------\n"
+			display="${display}  -------------------------"
 			display="${display}\n  apt-get install nginx"
 			;;
 		trojan )
@@ -88,9 +88,9 @@ function displayInstallItems(){
 			display="${display}\n  8. 部署Shadowsocks-libev"
 			display="${display}\n  apt-get install shadowsocks-libev"
 			display="${display}\n  apt-get install libsodium-dev"
-			display="${display}\n  -------------------------"
+			display="${display}\n\n  -------------------------"
 			display="${display}  安装v2ray-plugin"
-			display="${display}  -------------------------\n"
+			display="${display}  -------------------------"
 			display="${display}\n  wget https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.3.0/v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
 			display="${display}\n  tar -xzvf v2ray-plugin-linux-amd64-v1.3.0.tar.gz"
 			display="${display}\n  mv v2ray-plugin_linux_amd64 /usr/bin/v2ray-plugin"
@@ -286,7 +286,7 @@ function install_nginx(){
 	echo "deb-src https://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list
 	apt-get update
 	apt-get install nginx
-	ls /etc/nginx/conf.d/default.conf && rm /etc/nginx/conf.d/default.conf
+	sed -i "s/80;/8080;/;" /etc/nginx/conf.d/default.conf
 	cat > /etc/nginx/conf.d/chineseengineer.club.conf << '_EOF_'
 	server {
        listen 8080;
