@@ -574,7 +574,7 @@ function menu(){
 	local display
 	display="${GREEN}\n"
 	display="${display}\n  ===========================ChineseEngineer.CLUB（中国工程师俱乐部）=========================="
-	display="${display}  介绍：Nginx Trojan+V2ray+Shadowsocks-libev（TVS） ALL-IN-ONE VPS\n"
+	display="${display}\n  介绍：Nginx Trojan+V2ray+Shadowsocks-libev（TVS） ALL-IN-ONE VPS\n"
 	display="${display}  参考主机: Amazon Lightsail\n"
 	display="${display}  参考系统：Debian 9.5\n"
 	display="${display}  作者：Chinese Engineer 中国工程师\n"
@@ -582,7 +582,7 @@ function menu(){
 	display="${display}  网站（中国工程师俱乐部）：ChineseEngineer.CLUB\n"
 	display="${display}  图文教程：http://chineseengineer.club/smart-home/nginx-trojan-v2ray-ssr-all-in-one-vps-443/\n"
 	display="${display}\n  ===========================ChineseEngineer.CLUB（中国工程师俱乐部）=========================="
-	display="${display}${COLORS_END}"
+	display="${display}\n${COLORS_END}"
 	display="${display}${THINGREEN}\n"
 	display="${display}  1. 更新软件源\n"
 	display="${display}  2. 开启BBR加速\n"
