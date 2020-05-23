@@ -32,7 +32,6 @@ function displayContents(){
 	sleep 1
 }
 
-local display
 display="${GREEN}"
 display="${display}\n  ===========================ChineseEngineer.CLUB（中国工程师俱乐部）=========================="
 display="${display}\n  介绍：Speedtest-cn-servers.sh"
