@@ -13,11 +13,21 @@ fi
 speedtest-cli --list | grep -i 'china' > ~/speedtest-cn-servers.md
 awk -F\) '{print $1}' ~/speedtest-cn-servers.md > ~/speedtest-cn-ids.md
 
-ls ~/speedtest-cn-results-raw.csv && mv ~/speedtest-cn-results-raw.csv ~/speedtest-cn-results-raw.csv."$(date '+%Y-%m-%d %H:%M:%S')"
-count=0
+read -p "重新测试[Y]/任意键继续：" input
+input=${input,,}
+case $input in
+	y ) 
+#        ls ~/speedtest-cn-results-raw.csv && mv ~/speedtest-cn-results-raw.csv ~/speedtest-cn-results-raw.csv."$(date '+%Y-%m-%d %H:%M:%S')"
+        ls ~/speedtest-cn-results-raw.csv && rm ~/speedtest-cn-results-raw.csv
+		;;
+	* )
+		;;
+esac
+
 for i in $(cat ~/speedtest-cn-ids.md); do
-	speedtest-cli --server $i --csv --csv-delimiter "#" >> ~/speedtest-cn-results-raw.csv
-    count=$((count + 1))
+	if [[ -z "$(awk -F# -vi=$i '$1==i {print $1}' ~/speedtest-cn-results-raw.csv)" ]] && [[ -n $(speedtest-cli --list | grep -i $i\)) ]]; then
+		speedtest-cli --server $i --csv --csv-delimiter "#" >> ~/speedtest-cn-results-raw.csv
+	fi
 done
 
 awk -F# '{print $1,$2,$3,$4,$7,$8}' OFS="#" ~/speedtest-cn-results-raw.csv > ~/speedtest-cn-results.csv
@@ -43,15 +53,18 @@ do
 done < "$input"
 
 declare chartRows="['City', 'VPS-in', {type: 'string', role: 'annotation'}, 'VPS-out', {type: 'string', role: 'annotation'}],"
+declare -i count=0
 for i in "${idArr[@]}"; do
 	declare -a chartRow
-	chartRow[0]="${citiesArr[$i]}<br />${telecomArr[$i]}"
+	chartRow[0]="${citiesArr[$i]}\n${telecomArr[$i]}"
 	chartRow[1]=$(( ${downloadArr[$i]} ))
 	chartRow[2]="${downloadArr[$i]}Mbps ${dateArr[$i]}"
 	chartRow[3]=$(( ${uploadArr[$i]} ))
 	chartRow[4]="${uploadArr[$i]}Mbps ${timeArr[$i]}"
-	chartRows+="[\"${chartRow[0]}\", ${chartRow[1]}, \"${chartRow[2]}\", ${chartRow[3]}, \"${chartRow[4]}\"]," 
+	chartRows+="[\"${chartRow[0]}\", ${chartRow[1]}, \"${chartRow[2]}\", ${chartRow[3]}, \"${chartRow[4]}\"],"
+	count+=1
 done
+
 chartRows="[${chartRows%,}]"
 
 cat > /usr/share/nginx/html/index.html << _EOF_
@@ -67,32 +80,42 @@ cat > /usr/share/nginx/html/index.html << _EOF_
     google.charts.setOnLoadCallback(drawChart);
       
 	const commonOptions = {
-	  titleTextStyle: {
-	    fontSize: 20,
-	    color: '#000',
-	    bold: true,
-	    auraColor: 'none'
-	  },
-	  annotations: {
-	    alwaysOutside: true,
-	    textStyle: {
-	      fontSize: 15,
+		hAxis: {
+			textStyle: {
+			    fontSize: 15,
+			}
+	    },
+	    vAxis: {
+			textStyle: {
+			    fontSize: 20,
+			}
+	    },
+	    titleTextStyle: {
+	      fontSize: 20,
 	      color: '#000',
+	      bold: true,
 	      auraColor: 'none'
-	    }
-	  },
-	  legend: {position: 'bottom', textStyle: {fontSize: 25}},
-	  bars: 'horizontal',
-	  colors: ['red', 'blue'],
-	  backgroundColor: 'transparent',
+	    },
+	    annotations: {
+	      alwaysOutside: true,
+	      textStyle: {
+	        fontSize: 15,
+	        color: '#000',
+	        auraColor: 'none'
+	      }
+	    },
+	    legend: {position: 'top', textStyle: {fontSize: 25}},
+	    bars: 'horizontal',
+	    colors: ['lightblue', 'green'],
+	    backgroundColor: 'transparent',
 	};
 
     function drawChart() {
 	    var data = google.visualization.arrayToDataTable(${chartRows});
 
 	    let options = {
-	      title: '该VPS与国内城市网络节点的连接',
-	      height: 999,
+	      title: 'VPS-in, VPS-out Connecting with Chinese Cities',
+	      height: $(( count*99 )),
 	    };
 	    options = Object.assign({}, commonOptions, options);
 
