@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-trap 'echo "“Chinese Engineer 中国工程师”祝愿“科技让您的生活更美好”，再见！"' EXIT
+trap 'displayContents "中国工程师俱乐部（ChineseEngineer.CLUB）祝愿“科技让您的生活更美好”，再见！"' EXIT
 set -euo pipefail
 
 if [[ -z "$(pip -h | grep -i "Usage:")" ]]; then
@@ -10,10 +10,47 @@ if [[ -z "$(speedtest-cli -h | grep -i "usage: speedtest-cli")" ]]; then
 	pip install speedtest-cli
 fi
 
-speedtest-cli --list | grep -i 'china' > ~/speedtest-cn-servers.md
-awk -F\) '{print $1}' ~/speedtest-cn-servers.md > ~/speedtest-cn-ids.md
+# Colors
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+THINGREEN='\033[1;32m'
+BLUE='\033[0;34m'
+BG_CYAN='\033[1;46m'
+COLORS_END='\033[00m'
 
-read -p "重新测试[Y]/任意键继续：" input
+function displayContents(){
+	local display
+	display="${THINGREEN}\n"
+	display="${display}  ==========================================================================================\n"
+	for i in "$@"; do
+		display="${display}  $i\n"
+	done
+	display="${display}  ==========================================================================================\n"
+	display="${display}${COLORS_END}"
+	echo -e $display
+	sleep 1
+}
+
+local display
+display="${GREEN}"
+display="${display}\n  ===========================ChineseEngineer.CLUB（中国工程师俱乐部）=========================="
+display="${display}\n  介绍：Speedtest-cn-servers.sh"
+display="${display}\n  参考主机: Google Cloud Platform VM"
+display="${display}\n  参考系统：Debian 9"
+display="${display}\n  作者：Chinese Engineer 中国工程师"
+display="${display}\n  youtube频道：https://www.youtube.com/channel/UCsnE5O7jJzOO_JtFQFASNxw"
+display="${display}\n  网站（中国工程师俱乐部）：ChineseEngineer.CLUB"
+display="${display}\n  图文教程：http://chineseengineer.club/smart-home/deploy-tvs-all-in-one-vps/"
+display="${display}\n\n  -------------------------"
+display="${display}  重要提示"
+display="${display}  -------------------------"
+display="${display}\n  测试时间较长，请耐心等待，也可以利用screen程序后台运行！如果没有抓取到数据，请稍后再试！"
+display="${display}\n  ===========================ChineseEngineer.CLUB（中国工程师俱乐部）=========================="
+display="${display}\n${COLORS_END}"
+echo -e $display
+
+read -p "重新测试[Y]/任意键继续（测试时间较长，请耐心等待，也可以利用screen程序后台运行！）：" input
 input=${input,,}
 case $input in
 	y ) 
@@ -23,6 +60,9 @@ case $input in
 	* )
 		;;
 esac
+
+speedtest-cli --list | grep -i 'china' > ~/speedtest-cn-servers.md
+awk -F\) '{print $1}' ~/speedtest-cn-servers.md > ~/speedtest-cn-ids.md
 
 for i in $(cat ~/speedtest-cn-ids.md); do
 	if [[ -z "$(awk -F# -vi=$i '$1==i {print $1}' ~/speedtest-cn-results-raw.csv)" ]] && [[ -n $(speedtest-cli --list | grep -i $i\)) ]]; then
