@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-trap 'displayContents "中国工程师俱乐部（ChineseEngineer.CLUB）祝愿“科技让您的生活更美好”，再见！"' EXIT
+function trapDo(){
+	"$(( count == total )) && displayContents \"中国工程师俱乐部（ChineseEngineer.CLUB）祝愿“科技让您的生活更美好”，再见！\""
+	"$(( count != total )) && bash chineseengineer-speedtest-cn-servers.sh"
+}
+trap trapDo EXIT
 set -euo pipefail
 
 if [[ -z "$(pip -h | grep -i "Usage:")" ]]; then
@@ -63,9 +67,18 @@ esac
 speedtest-cli --list | grep -i 'china' > ~/speedtest-cn-servers.md
 awk -F\) '{print $1}' ~/speedtest-cn-servers.md > ~/speedtest-cn-ids.md
 
+declare -i total=0
 for i in $(cat ~/speedtest-cn-ids.md); do
-	if [[ -z "$(awk -F# -vi=$i '$1==i {print $1}' ~/speedtest-cn-results-raw.csv)" ]] && [[ -n $(speedtest-cli --list | grep -i $i\)) ]]; then
-		speedtest-cli --server $i --csv --csv-delimiter "#" >> ~/speedtest-cn-results-raw.csv
+	total=$((total + 1))
+done
+declare -i count=0
+for i in $(cat ~/speedtest-cn-ids.md); do
+	count=$((count + 1))
+	if [ ! -e "~/speedtest-cn-results-raw.csv" ] || [[ -z "$(awk -F# -vi=$i '$1==i {print $1}' ~/speedtest-cn-results-raw.csv)" ]]; then
+		if [[ -n $(speedtest-cli --list | grep -i $i\)) ]]; then
+			echo "$count/$total"
+			speedtest-cli --server $i --csv --csv-delimiter "#" >> ~/speedtest-cn-results-raw.csv
+		fi
 	fi
 done
 
