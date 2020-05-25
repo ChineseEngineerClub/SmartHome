@@ -2,8 +2,8 @@
 declare -i count=0
 declare -i total=0
 function trapDo(){
-	$(( count == total )) && displayContents \"中国工程师俱乐部（ChineseEngineer.CLUB）祝愿“科技让您的生活更美好”，再见！\"
-	$(( count != total )) && bash chineseengineer-speedtest-cn-servers.sh
+	[ $count -eq $total ] && displayContents \"中国工程师俱乐部（ChineseEngineer.CLUB）祝愿“科技让您的生活更美好”，再见！\"
+	[ $count -ne $total ] && bash chineseengineer-speedtest-cn-servers.sh
 }
 trap trapDo EXIT
 set -euo pipefail
