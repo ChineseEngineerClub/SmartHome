@@ -68,7 +68,7 @@ case $input in
 		;;
 esac
 
-lines=$(speedtest-cli --list | grep -i 'china')
+lines="$(speedtest-cli --list | grep -i 'china')" || cat <<< ""
 if [[ -n $lines ]]; then
 	echo $lines > ~/speedtest-cn-servers.md
 else
