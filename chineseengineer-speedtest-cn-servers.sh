@@ -57,7 +57,7 @@ display="${display}\n  ===========================ChineseEngineer.CLUB（中国�
 display="${display}\n${COLORS_END}"
 echo -e $display
 
-read -p "重新测试[Y]/任意键继续（测试时间较长，请耐心等待，也可以利用screen程序后台运行！）：" input
+read -p "重新测试[Y]/任意键继续（测试时间较长，请耐心等待，也可以利用screen程序后台运行！）/Ctrl+c退出：" input
 input=${input,,}
 case $input in
 	y ) 
