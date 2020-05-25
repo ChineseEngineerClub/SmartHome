@@ -68,7 +68,12 @@ case $input in
 		;;
 esac
 
-speedtest-cli --list | grep -i 'china' > ~/speedtest-cn-servers.md
+lines=$(speedtest-cli --list | grep -i 'china')
+if [[ -n $lines ]]; then
+	echo $lines > ~/speedtest-cn-servers.md
+else
+	cat /dev/null >> ~/speedtest-cn-servers.md
+fi
 awk -F\) '{print $1}' ~/speedtest-cn-servers.md > ~/speedtest-cn-ids.md
 
 declare -i total=0
