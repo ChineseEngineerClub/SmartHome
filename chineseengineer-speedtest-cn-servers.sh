@@ -70,7 +70,7 @@ esac
 
 lines="$(speedtest-cli --list | grep -i 'china')" || cat <<< ""
 if [[ -n $lines ]]; then
-	echo $lines > ~/speedtest-cn-servers.md
+	speedtest-cli --list | grep -i 'china' > ~/speedtest-cn-servers.md
 else
 	cat /dev/null >> ~/speedtest-cn-servers.md
 fi
